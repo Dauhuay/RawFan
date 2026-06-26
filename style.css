@@ -441,3 +441,58 @@ body {
         transform: scale(1.03);
     }
 }
+
+/* Upgrade Screen */
+#upgrade-screen {
+    max-width: 800px;
+}
+
+.upgrade-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.upgrade-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.upgrade-card:hover {
+    background: rgba(0, 242, 254, 0.05);
+    border-color: #00f2fe;
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+}
+
+.upgrade-card[data-skill="hyper_blade"]:hover {
+    background: rgba(255, 0, 127, 0.05);
+    border-color: #ff007f;
+    box-shadow: 0 10px 30px rgba(255, 0, 127, 0.2);
+}
+
+.upgrade-card[data-skill="nano_healing"]:hover {
+    background: rgba(0, 255, 127, 0.05);
+    border-color: #00ff7f;
+    box-shadow: 0 10px 30px rgba(0, 255, 127, 0.2);
+}
+
+.skill-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.skill-desc {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}

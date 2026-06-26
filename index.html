@@ -95,6 +95,25 @@
             <button id="resume-btn" class="neon-btn">繼續遊戲 (RESUME)</button>
             <button id="main-menu-btn" class="neon-btn reset" style="margin-top: 15px;">返回主畫面 (MAIN MENU)</button>
         </div>
+        <!-- Upgrade Screen -->
+        <div id="upgrade-screen" class="glass-panel hidden">
+            <h2 class="terminal-text" style="color: #00f2fe;">系統升級 (SYSTEM UPGRADE)</h2>
+            <p class="game-over-subtitle">選擇一項強化模組</p>
+            <div id="upgrade-options" class="upgrade-container">
+                <div class="upgrade-card" data-skill="swift_step">
+                    <h3 class="skill-name neon-cyan">迅捷微步</h3>
+                    <p class="skill-desc">移動速度 +20%<br>芒閃冷卻 -1.5秒</p>
+                </div>
+                <div class="upgrade-card" data-skill="hyper_blade">
+                    <h3 class="skill-name neon-pink">巨刃超頻</h3>
+                    <p class="skill-desc">雙刀攻擊範圍 +20<br>普攻冷卻 -15%</p>
+                </div>
+                <div class="upgrade-card" data-skill="nano_healing">
+                    <h3 class="skill-name" style="color: #00ff7f;">奈米修復</h3>
+                    <p class="skill-desc">最大生命 +30<br>立即恢復 50 HP</p>
+                </div>
+            </div>
+        </div>
         <!-- Floating audio toggle while playing -->
         <button id="floating-mute-btn" class="icon-btn floating hidden">🔊</button>
     </div>

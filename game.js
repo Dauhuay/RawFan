@@ -261,6 +261,8 @@ class Player {
         this.y = y;
         this.radius = 20;
         this.speed = PLAYER_SPEED;
+        this.swordLength = SWORD_LENGTH;
+        this.swingCooldown = SWING_COOLDOWN;
         this.angle = 0; // facing direction (towards mouse)
 
         // HP status
@@ -280,7 +282,7 @@ class Player {
     triggerSwing() {
         if (this.cooldownTime <= 0) {
             this.swingTime = SWING_DURATION;
-            this.cooldownTime = SWING_COOLDOWN;
+            this.cooldownTime = this.swingCooldown;
             this.lastSlashTargets.clear();
             screenShake = Math.max(screenShake, 3); // subtle screen shake on swing
             Sound.playSlash();
@@ -330,6 +332,7 @@ class Player {
                     if (newWave > wave) {
                         wave = newWave;
                         floatingTexts.push(new FloatingText(this.x, this.y - 40, `WAVE ${wave} LOADED`, '#ffb800'));
+                        triggerUpgradeSelection();
                     }
                     updateHUD();
                 }
@@ -473,13 +476,13 @@ class Player {
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(0, 0, SWORD_LENGTH, currAngle1 - tailLength, currAngle1);
+            ctx.arc(0, 0, this.swordLength, currAngle1 - tailLength, currAngle1);
             ctx.stroke();
             // Outer glow stroke
             ctx.strokeStyle = 'rgba(0, 242, 254, 0.4)';
             ctx.lineWidth = 10;
             ctx.beginPath();
-            ctx.arc(0, 0, SWORD_LENGTH, currAngle1 - tailLength, currAngle1);
+            ctx.arc(0, 0, this.swordLength, currAngle1 - tailLength, currAngle1);
             ctx.stroke();
             ctx.restore();
             // Counter-clockwise trail (Magenta)
@@ -489,13 +492,13 @@ class Player {
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(0, 0, SWORD_LENGTH, currAngle2, currAngle2 + tailLength);
+            ctx.arc(0, 0, this.swordLength, currAngle2, currAngle2 + tailLength);
             ctx.stroke();
             // Outer glow stroke
             ctx.strokeStyle = 'rgba(255, 0, 127, 0.4)';
             ctx.lineWidth = 10;
             ctx.beginPath();
-            ctx.arc(0, 0, SWORD_LENGTH, currAngle2, currAngle2 + tailLength);
+            ctx.arc(0, 0, this.swordLength, currAngle2, currAngle2 + tailLength);
             ctx.stroke();
             ctx.restore();
         }
@@ -742,7 +745,7 @@ function update(dt) {
             const distToSword = Math.hypot(e.x - player.x, e.y - player.y);
 
             // Check radius bounds
-            if (distToSword >= player.radius - 10 && distToSword <= player.radius + SWORD_LENGTH + e.size / 2) {
+            if (distToSword >= player.radius - 10 && distToSword <= player.radius + player.swordLength + e.size / 2) {
                 // Calculate angle to enemy relative to player
                 const angleToEnemy = Math.atan2(e.y - player.y, e.x - player.x);
 
@@ -774,6 +777,7 @@ function update(dt) {
                     if (newWave > wave) {
                         wave = newWave;
                         floatingTexts.push(new FloatingText(player.x, player.y - 40, `WAVE ${wave} LOADED`, '#ffb800'));
+                        triggerUpgradeSelection();
                     }
                     updateHUD();
                 }
@@ -927,6 +931,30 @@ function resizeCanvas() {
     }
 }
 // --- MAIN EVENT SETUP ---
+function triggerUpgradeSelection() {
+    if (gameState !== 'PLAYING') return;
+    gameState = 'UPGRADE';
+    document.getElementById('upgrade-screen').classList.remove('hidden');
+    if (Sound.ctx) Sound.ctx.suspend();
+}
+
+function applyUpgrade(skillId) {
+    if (skillId === 'swift_step') {
+        player.speed *= 1.2;
+        player.skillFlashCD = Math.max(1000, player.skillFlashCD - 1500);
+        floatingTexts.push(new FloatingText(player.x, player.y - 60, `速度增幅 / 芒閃冷卻下降`, '#00f2fe'));
+    } else if (skillId === 'hyper_blade') {
+        player.swordLength += 20;
+        player.swingCooldown *= 0.85;
+        floatingTexts.push(new FloatingText(player.x, player.y - 60, `攻擊範圍擴大 / 攻速上升`, '#ff007f'));
+    } else if (skillId === 'nano_healing') {
+        player.maxHp += 30;
+        player.hp = Math.min(player.maxHp, player.hp + 50);
+        floatingTexts.push(new FloatingText(player.x, player.y - 60, `生命值恢復與強化`, '#00ff7f'));
+    }
+    updateHUD();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     canvas = document.getElementById('game-canvas');
     ctx = canvas.getContext('2d');
@@ -1035,6 +1063,23 @@ window.addEventListener('DOMContentLoaded', () => {
             mainMenuBtn.blur();
         });
     }
+
+    const upgradeCards = document.querySelectorAll('.upgrade-card');
+    upgradeCards.forEach(card => {
+        card.addEventListener('click', () => {
+            if (gameState !== 'UPGRADE') return;
+            
+            const skill = card.getAttribute('data-skill');
+            applyUpgrade(skill);
+            
+            gameState = 'PLAYING';
+            document.getElementById('upgrade-screen').classList.add('hidden');
+            Sound.resume();
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        });
+    });
+
     // Audio Mute Buttons
     const muteBtnStart = document.getElementById('mute-btn-start');
     if (muteBtnStart) {
