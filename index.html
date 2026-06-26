@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Blade Phantom | 霓虹雙刃幻影</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- The Game Canvas -->
+        <canvas id="game-canvas"></canvas>
+        <!-- HUD Layer (Visible while playing) -->
+        <div id="hud" class="glass-panel hidden">
+            <div class="hud-item" id="score-container">
+                <span class="hud-label">SCORE</span>
+                <span id="score" class="hud-value">000000</span>
+            </div>
+            <div class="hud-item" id="health-container">
+                <span class="hud-label">HP</span>
+                <div class="health-bar-bg">
+                    <div id="health-bar-fill"></div>
+                </div>
+            </div>
+            <div class="hud-item" id="wave-container">
+                <span class="hud-label">WAVE</span>
+                <span id="wave-level" class="hud-value">1</span>
+            </div>
+        </div>
+        <!-- Start Screen -->
+        <div id="start-screen" class="glass-panel active-screen">
+            <h1 class="game-title">NEON BLADE<br><span class="neon-pink">PHANTOM</span></h1>
+            <p class="game-subtitle">霓虹雙刃幻影</p>
+
+            <div class="instructions">
+                <div class="control-row">
+                    <span class="keys-wrapper">
+                        <span class="key-badge">W</span>
+                        <span class="key-badge">A</span>
+                        <span class="key-badge">S</span>
+                        <span class="key-badge">D</span>
+                    </span>
+                    <span class="control-desc">移動角色</span>
+                </div>
+                <div class="control-row">
+                    <span class="keys-wrapper">
+                        <span class="key-badge" style="padding-left: 16px; padding-right: 16px;">SPACE</span>
+                    </span>
+                    <span class="control-desc">芒閃．割喉風</span>
+                </div>
+                <div class="control-row">
+                    <span class="mouse-badge">MOUSE</span>
+                    <span class="control-desc">瞄準方向</span>
+                </div>
+                <div class="control-row">
+                    <span class="mouse-badge click">L-CLICK</span>
+                    <span class="control-desc">雙刀弧形斬擊</span>
+                </div>
+            </div>
+            <button id="start-btn" class="neon-btn">啟動系統 (START)</button>
+
+            <div class="audio-control">
+                <button id="mute-btn-start" class="icon-btn">🔊 音效已開啟</button>
+            </div>
+        </div>
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="glass-panel hidden">
+            <h2 class="terminal-text">SYSTEM TERMINATED</h2>
+            <p class="game-over-subtitle">連線中斷 • 核心損毀</p>
+
+            <div class="stats-panel">
+                <div class="stat-row">
+                    <span>最終得分 (SCORE):</span>
+                    <span id="final-score" class="stat-val neon-pink">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>最高紀錄 (BEST):</span>
+                    <span id="high-score" class="stat-val neon-cyan">0</span>
+                </div>
+            </div>
+            <button id="restart-btn" class="neon-btn reset">重新載入核心 (RELOAD)</button>
+        </div>
+        <!-- Floating audio toggle while playing -->
+        <button id="floating-mute-btn" class="icon-btn floating hidden">🔊</button>
+    </div>
+    <script src="game.js"></script>
+</body>
+
+</html>
