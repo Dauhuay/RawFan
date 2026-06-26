@@ -942,7 +942,19 @@ window.addEventListener('DOMContentLoaded', () => {
     // Input Handlers (Keyboard WASD)
     window.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
-        if (key === ' ') {
+        if (key === 'escape' || key === 'p') {
+            if (gameState === 'PLAYING') {
+                gameState = 'PAUSED';
+                document.getElementById('pause-screen').classList.remove('hidden');
+                if (Sound.ctx) Sound.ctx.suspend();
+            } else if (gameState === 'PAUSED') {
+                gameState = 'PLAYING';
+                document.getElementById('pause-screen').classList.add('hidden');
+                Sound.resume();
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+            }
+        } else if (key === ' ') {
             if (gameState === 'PLAYING' && player) {
                 player.executeSkillFlash(enemies);
             }
@@ -983,6 +995,40 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('hud').classList.remove('hidden');
             document.getElementById('floating-mute-btn').classList.remove('hidden');
             initGame();
+        });
+    }
+
+    const resumeBtn = document.getElementById('resume-btn');
+    if (resumeBtn) {
+        resumeBtn.addEventListener('click', () => {
+            if (gameState === 'PAUSED') {
+                gameState = 'PLAYING';
+                document.getElementById('pause-screen').classList.add('hidden');
+                Sound.resume();
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+            }
+        });
+    }
+
+    const mainMenuBtn = document.getElementById('main-menu-btn');
+    if (mainMenuBtn) {
+        mainMenuBtn.addEventListener('click', () => {
+            gameState = 'START';
+            document.getElementById('pause-screen').classList.add('hidden');
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('floating-mute-btn').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            // reset background preview
+            player = new Player(WORLD_SIZE / 2, WORLD_SIZE / 2);
+            enemies = [];
+            particles = [];
+            scenery = [];
+            generateScenery();
+            camera.x = player.x - canvas.width / 2;
+            camera.y = player.y - canvas.height / 2;
+            if (Sound.ctx) Sound.ctx.suspend();
+            draw();
         });
     }
     // Audio Mute Buttons
