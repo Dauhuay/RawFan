@@ -986,6 +986,7 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('hud').classList.remove('hidden');
             document.getElementById('floating-mute-btn').classList.remove('hidden');
             initGame();
+            startBtn.blur();
         });
     }
     const restartBtn = document.getElementById('restart-btn');
@@ -995,6 +996,7 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('hud').classList.remove('hidden');
             document.getElementById('floating-mute-btn').classList.remove('hidden');
             initGame();
+            restartBtn.blur();
         });
     }
 
@@ -1008,6 +1010,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 lastTime = performance.now();
                 requestAnimationFrame(gameLoop);
             }
+            resumeBtn.blur();
         });
     }
 
@@ -1029,6 +1032,7 @@ window.addEventListener('DOMContentLoaded', () => {
             camera.y = player.y - canvas.height / 2;
             if (Sound.ctx) Sound.ctx.suspend();
             draw();
+            mainMenuBtn.blur();
         });
     }
     // Audio Mute Buttons
