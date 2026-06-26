@@ -22,6 +22,7 @@ let player;
 let enemies = [];
 let particles = [];
 let floatingTexts = [];
+let scenery = [];
 let nextSpawnTime = 0;
 // Camera
 let camera = { x: 0, y: 0, lerpSpeed: 0.1 };
@@ -642,6 +643,19 @@ function updateHUD() {
         waveVal.textContent = wave;
     }
 }
+function generateScenery() {
+    scenery = [];
+    for (let i = 0; i < 150; i++) {
+        scenery.push({
+            x: Math.random() * WORLD_SIZE,
+            y: Math.random() * WORLD_SIZE,
+            size: Math.random() * 20 + 8,
+            type: Math.random() > 0.5 ? 'cross' : 'square',
+            opacity: Math.random() * 0.15 + 0.05
+        });
+    }
+}
+
 // --- SYSTEM GAME LOOPS ---
 function initGame() {
     Sound.init();
@@ -655,6 +669,7 @@ function initGame() {
     enemies = [];
     particles = [];
     floatingTexts = [];
+    generateScenery();
     screenShake = 0;
     damageOverlayTimer = 0;
     // Reset keyboard keys
@@ -831,6 +846,27 @@ function draw() {
         ctx.lineTo(Math.min(WORLD_SIZE, endGridX) - camera.x, y - camera.y);
     }
     ctx.stroke();
+    
+    // --- DRAW SCENERY ---
+    ctx.lineWidth = 1.5;
+    scenery.forEach(item => {
+        // Only draw if inside camera view
+        if (item.x > camera.x - 50 && item.x < camera.x + canvas.width + 50 &&
+            item.y > camera.y - 50 && item.y < camera.y + canvas.height + 50) {
+            ctx.strokeStyle = `rgba(0, 242, 254, ${item.opacity})`;
+            if (item.type === 'square') {
+                ctx.strokeRect(item.x - camera.x - item.size/2, item.y - camera.y - item.size/2, item.size, item.size);
+            } else if (item.type === 'cross') {
+                ctx.beginPath();
+                ctx.moveTo(item.x - camera.x - item.size/2, item.y - camera.y);
+                ctx.lineTo(item.x - camera.x + item.size/2, item.y - camera.y);
+                ctx.moveTo(item.x - camera.x, item.y - camera.y - item.size/2);
+                ctx.lineTo(item.x - camera.x, item.y - camera.y + item.size/2);
+                ctx.stroke();
+            }
+        }
+    });
+
     // --- DRAW WORLD ARENA BOUNDARIES ---
     // Outer Border (Heavy neon glow styling)
     ctx.strokeStyle = '#ff007f';
@@ -901,6 +937,7 @@ window.addEventListener('DOMContentLoaded', () => {
     player = new Player(WORLD_SIZE / 2, WORLD_SIZE / 2);
     camera.x = player.x - canvas.width / 2;
     camera.y = player.y - canvas.height / 2;
+    generateScenery();
     draw();
     // Input Handlers (Keyboard WASD)
     window.addEventListener('keydown', (e) => {
